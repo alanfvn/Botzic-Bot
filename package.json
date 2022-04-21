@@ -1,0 +1,23 @@
+{
+  "name": "botzic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/index.js",
+  "engines": {
+    "node": ">=0.16.0"
+  },
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
+  },
+  "author": "alanfvn",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "node-ical": "^0.15.1",
+    "telegraf": "^4.7.0"
+  }
+}
