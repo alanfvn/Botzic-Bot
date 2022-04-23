@@ -40,7 +40,7 @@ const notificar = async (ctx) =>{
     await ctx.reply('En construcción...');
 }
 
-//UTIL
+
 function taskFormat(data){
     const ev = Object.values(data).map(x => formatEvent(x));
     let task = ev.join("\n\n");
@@ -50,9 +50,6 @@ function taskFormat(data){
     }
     return task;
 }
-
-
-
 
 
 module.exports = {

@@ -1,9 +1,13 @@
 const ical = require('node-ical');
-const CAL_URL = process.env.CALENDAR;
+const {getDays, isExpired} = require('../util/util');
+const cal_url = process.env.CALENDAR;
+
+
 let calData = null;
 
+
 async function fetchCalendar(){
-    const data = await ical.async.fromURL(CAL_URL);
+    const data = await ical.async.fromURL(cal_url);
     const fdata = filterData(data);
     calData = fdata;
 }
@@ -26,12 +30,16 @@ function validEvent(_key, event){
     const date = new Date(Date.parse(event["end"]));
     //why did this teacher create a thousand events????
     const discard = event["summary"]?.includes("Sesión #");
+    const expired = isExpired(now, date);
+    //check if the event is within two weeks from now.
+    const tooFar = getDays(now, date) > (2*7);
+
     /*
         NOTE: we only verify the part of the date 
         because sometimes the "end" property does 
         not return the time.
     */
-    return !discard && !isExpired(now, date);
+    return !discard && !expired && !tooFar
 }
 
 /**
@@ -53,7 +61,9 @@ function formatEvent(event){
     ).trim().toUpperCase();
 
     let date = new Date(Date.parse(event["end"])
-    ).toLocaleString();
+    ).toLocaleString('es-ES', {
+        timeZone: 'America/Guatemala'
+    });
 
     return `📗 *${name}*\n
     🕐 Expira: ${date}
@@ -74,23 +84,10 @@ function getEventDesc(uid){
     return event.description;
 }
 
-//================= UTIL =================
 function regexFix(text){
+    //comply with Telegram's Markdown.
     const reg = new RegExp(/(_|\*|\[|\]|\(|\)|~|`|>|#|\+|-|=|\||{|}|\.|!)/g);
     return text.replaceAll(reg, '\\$&');
-}
-
-/**
- * 
- * @param {Date} d1 
- * @param {Date} d2 
- * @returns boolean to check if 
- * dates are within the same day or ahead.
- */
-function isExpired(d1, d2){
-    d1.setHours(0, 0, 0, 0);
-    d2.setHours(0, 0, 0, 0);
-    return d1.getTime() > d2.getTime();
 }
 
 module.exports = {
