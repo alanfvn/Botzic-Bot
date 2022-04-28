@@ -1,5 +1,5 @@
 const ical = require('node-ical');
-const {getDays, isExpired} = require('../util/util');
+const {getDays, isExpired, regexFix} = require('../util/util');
 const cal_url = process.env.CALENDAR;
 
 
@@ -84,11 +84,7 @@ function getEventDesc(uid){
     return event.description;
 }
 
-function regexFix(text){
-    //comply with Telegram's Markdown.
-    const reg = new RegExp(/(_|\*|\[|\]|\(|\)|~|`|>|#|\+|-|=|\||{|}|\.|!)/g);
-    return text.replaceAll(reg, '\\$&');
-}
+
 
 module.exports = {
     fetchCalendar,

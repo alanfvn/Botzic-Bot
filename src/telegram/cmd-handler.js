@@ -16,7 +16,7 @@ const start = async (ctx) =>{
 const tareas = async (ctx) =>{
     const data = getCalendar();
     if(Object.keys(data).length === 0){
-        await ctx.replyWithMarkdownV2('No hay tareas!');
+        await ctx.replyWithMarkdownV2('No hay tareas 👌');
         return;
     }
     const msgs = taskFormat(data);
