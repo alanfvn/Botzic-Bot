@@ -32,8 +32,8 @@ function validEvent(_key, event){
     const discard = event["summary"]?.includes("Sesión #");
     const expired = isExpired(now, date);
     //check if the event is within two weeks from now.
-    const tooFar = getDays(now, date) > (2*7);
-
+    /* const tooFar = getDays(now, date) > (2*7); */
+    const tooFar = false;
     /*
         NOTE: we only verify the part of the date 
         because sometimes the "end" property does 
@@ -51,39 +51,40 @@ function validEvent(_key, event){
 function formatEvent(event){
     let uid = event["uid"]
     let name = event["summary"];
+    let date = event["end"];
+
 
     uid = regexFix(uid.substr(
-        uid.lastIndexOf('-')+1, uid.length)
-    );
+        uid.lastIndexOf('-')+1, uid.length
+    ));
     //sanitize the string.
     name = regexFix(
-            name.substr(0, name.lastIndexOf(' '))
-    ).trim().toUpperCase();
+        name.substr(0, name.lastIndexOf(' ')
+    )).trim().toUpperCase();
 
-    let date = new Date(Date.parse(event["end"])
-    ).toLocaleString('es-ES', {
-        timeZone: 'America/Guatemala'
-    });
+
+    const format = new Intl.DateTimeFormat('es-ES', {
+        timeZone: 'America/Guatemala',
+        year: "numeric", month: "2-digit",
+        day: "2-digit", hour: "2-digit",
+        minute: "2-digit",
+    }).format(date);
+
 
     return `📗 *${name}*\n
-    🕐 Expira: ${date}
-    🔍 UID: \`/info ${uid}\``
+    🕐 Expira: ${format}
+    🗒️ Descripción: \\/info\\_${uid}`
 }
 
 function getEventDesc(uid){
-    let evId = 'event-assignment-'+uid;
+    const ev = `event-assignment-${uid}`
+    const id =  !(ev in calData) ? `event-calendar-event-${uid}` : ev;
+    
+    const event = calData[id];
+    const desc = event?.description ?? "Descripción no encontrada.";
 
-    if(!(evId in calData)){
-        evId = 'event-calendar-event-'+uid;
-    }
-    const event = calData[evId];
-
-    if(!event){
-        return 'Actividad no encontrada!';
-    }
-    return event.description;
+    return desc;
 }
-
 
 
 module.exports = {
