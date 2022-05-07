@@ -32,8 +32,7 @@ function validEvent(_key, event){
     const discard = event["summary"]?.includes("Sesión #");
     const expired = isExpired(now, date);
     //check if the event is within two weeks from now.
-    /* const tooFar = getDays(now, date) > (2*7); */
-    const tooFar = false;
+    const tooFar = getDays(now, date) > (2*7); 
     /*
         NOTE: we only verify the part of the date 
         because sometimes the "end" property does 
