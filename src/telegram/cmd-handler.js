@@ -1,8 +1,4 @@
-const {
-    getCalendar, formatEvent, 
-    getEventDesc
-} = require('../calendar/ical-man');
-
+import {getCalendar, getEventDesc, formatEvents} from '../calendar/ical-man.js';
 
 const start = async (ctx) =>{
     await ctx.replyWithMarkdownV2(
@@ -13,13 +9,8 @@ const start = async (ctx) =>{
 }
 
 const tareas = async (ctx) =>{
-    const data = getCalendar();
-    if(Object.keys(data).length === 0){
-        await ctx.replyWithMarkdownV2('No hay tareas 👌');
-        return;
-    }
-    const msgs = taskFormat(data);
-    await ctx.replyWithMarkdownV2('*Tareas*');
+    const calData = getCalendar();
+    const msgs = formatEvents(calData);
     await ctx.replyWithMarkdownV2(msgs);
 }
 
@@ -35,16 +26,4 @@ const notificar = async (ctx) =>{
 }
 
 
-function taskFormat(data){
-    const ev = Object.values(data).map(x => formatEvent(x));
-    let task = ev.join("\n\n");
-    task = task.length > 4096 ? task.substring(0, 4096) : task;
-    //temporary hack.
-    return task;
-}
-
-
-module.exports = {
-    start,info,
-    tareas, notificar
-}
+export {start, tareas, info, notificar};

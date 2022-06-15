@@ -1,11 +1,9 @@
-const {fetchCalendar} = require('../calendar/ical-man');
-
+import {fetchCalendar} from '../calendar/ical-man.js';
 /*
     TODO: 
     Create a notification system for new events
     or events close to expire.
 */
-
 async function startTasks(){
     await fetchCalendar();
     setInterval(async () => {
@@ -13,6 +11,4 @@ async function startTasks(){
     }, 1000*60*5);
 }
 
-module.exports = {
-    startTasks,
-}
+export default startTasks;

@@ -1,9 +1,5 @@
+import "dotenv/config.js"
+import startBot from './telegram/bot.js'
+import startTasks from './task/task-man.js'
 
-require('dotenv').config();
-const {startBot} = require('./telegram/bot');
-const {startTasks} = require('./task/task-man');
-
-//init
 startTasks().then(()=>startBot());
-
-
