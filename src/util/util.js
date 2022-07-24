@@ -40,4 +40,5 @@ function regexFix(text){
     return text.replaceAll(reg, '\\$&');
 }
 
+
 export {getDays, regexFix, isExpired, dateFormat};

@@ -6,12 +6,7 @@ let calData = null;
 
 async function fetchCalendar(){
     const data = await ical.async.fromURL(cal_url);
-    const fdata = filterData(data);
-    calData = fdata;
-}
-
-function getCalendar(){
-    return calData;
+    calData = filterData(data);
 }
 
 function filterData(calData){
@@ -19,31 +14,29 @@ function filterData(calData){
 }
 
 function validEvent(_key, event){
-    const {type, summary, end} = event;
+    const {type, end} = event;
     if(type !== 'VEVENT') return false
+
     const now = new Date();
-    const discard = discardEvent(summary);
-    const tooFar = getDays(now,end);
+    const tooFar = getDays(now,end) > 14;
     const expired = isExpired(now, end);
 
-    return !discard && !expired && !tooFar
+    return !expired && !tooFar 
 }
 
-function discardEvent(eventName){
-    const discardList = ["Sesión #"];
-    return discardList.includes(eventName);
-}
+
 function formatEvents(events){
     let formatted = "📝 *TAREAS:*\n\n"
 
     const evs = Object.values(events).map(ev=>{
-	const {uid, summary, end} = ev;
-	const evId = regexFix(uid.substr(uid.lastIndexOf('-')+1, uid.length));
-	const evName = regexFix(summary.substr(0, summary.lastIndexOf(' '))).trim().toUpperCase();
-	return `📗 *${evName}*
-	    🕐 Expira: ${dateFormat.format(end)}
-	    🗒️ Descripción: \\/info\\_${evId}`
+        const {uid, summary, end} = ev;
+        const evId = regexFix(uid.substr(uid.lastIndexOf('-')+1, uid.length));
+        const evName = regexFix(summary.substr(0, summary.lastIndexOf(' '))).trim().toUpperCase();
+        return `📗 *${evName}* 
+    🕐 Expira: ${dateFormat.format(end)}
+    🗒️ Descripción: \\/info\\_${evId}`
     });
+
     formatted += evs.length > 0 ? evs.join('\n\n') : "No hay tareas 👌";
     return formatted;
 }
@@ -54,6 +47,10 @@ function getEventDesc(uid){
     const event = calData[id];
     const desc = event?.description ?? "Descripción no encontrada.";
     return desc;
+}
+
+function getCalendar(){
+    return calData;
 }
 
 export {fetchCalendar, getCalendar, getEventDesc, formatEvents}
