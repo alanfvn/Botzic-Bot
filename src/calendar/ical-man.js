@@ -14,12 +14,18 @@ function filterData(calData){
 }
 
 function validEvent(_key, event){
-    const {type, end} = event;
+    const {type, start} = event;
     if(type !== 'VEVENT') return false
 
     const now = new Date();
-    const tooFar = getDays(now,end) > 14;
-    const expired = isExpired(now, end);
+    const tooFar = getDays(now,start) > 14;
+    const expired = isExpired(now, start);
+
+    /* 
+        what the fuck... actually the "start" property 
+        it's more accurate when trying to find out when 
+        does a event end.
+    */
 
     return !expired && !tooFar 
 }
@@ -29,11 +35,11 @@ function formatEvents(events){
     let formatted = "📝 *TAREAS:*\n\n"
 
     const evs = Object.values(events).map(ev=>{
-        const {uid, summary, end} = ev;
+        const {uid, summary, start} = ev;
         const evId = regexFix(uid.substr(uid.lastIndexOf('-')+1, uid.length));
         const evName = regexFix(summary.substr(0, summary.lastIndexOf(' '))).trim().toUpperCase();
         return `📗 *${evName}* 
-    🕐 Expira: ${dateFormat.format(end)}
+    🕐 Expira: ${dateFormat.format(start)}
     🗒️ Descripción: \\/info\\_${evId}`
     });
 

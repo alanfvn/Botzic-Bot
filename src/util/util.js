@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 const dateFormat = new Intl.DateTimeFormat('es-ES', {
     timeZone: 'America/Guatemala',
     year: "numeric", month: "2-digit",
@@ -40,5 +42,8 @@ function regexFix(text){
     return text.replaceAll(reg, '\\$&');
 }
 
+async function dumpFile(data){
+   await fs.promises.writeFile("debug_file.json", JSON.stringify(data));
+}
 
-export {getDays, regexFix, isExpired, dateFormat};
+export {getDays, regexFix, isExpired, dateFormat, dumpFile};
